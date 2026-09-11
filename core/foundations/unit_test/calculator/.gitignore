@@ -1,0 +1,7 @@
+calculator
+calculator.exe
+*.out
+*.o
+*.so
+*.dylib
+*.dll
