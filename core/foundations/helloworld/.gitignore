@@ -1,0 +1,7 @@
+hello_world
+hello_world.exe
+*.out
+*.o
+*.so
+*.dylib
+*.dll
