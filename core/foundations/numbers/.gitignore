@@ -1,0 +1,7 @@
+numbers
+numbers.exe
+*.out
+*.o
+*.so
+*.dylib
+*.dll
