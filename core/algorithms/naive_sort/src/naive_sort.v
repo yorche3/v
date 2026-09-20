@@ -19,37 +19,37 @@
 
 module src
 
-pub fn selection_sort(array []int) []int {
-	mut array := array.clone()
-	n := array.len
+pub fn selection_sort(arr []int) []int {
+	mut result := arr.clone()
+	n := result.len
 	if n < 2 {
-		return array
+		return result
 	}
 	for i in 0 .. n - 1 {
 		mut min_index := i
 		for j in i + 1 .. n {
-			if array[j] < array[min_index] {
+			if result[j] < result[min_index] {
 				min_index = j
 			}
 		}
 		if min_index != i {
-			array[i], array[min_index] = array[min_index], array[i]
+			result[i], result[min_index] = result[min_index], result[i]
 		}
 	}
-	return array
+	return result
 }
 
-pub fn bubble_sort(array []int) []int {
-	mut array := array.clone()
-	n := array.len
+pub fn bubble_sort(arr []int) []int {
+	mut result := arr.clone()
+	n := result.len
 	if n < 2 {
-		return array
+		return result
 	}
 	for i in 0 .. n - 1 {
 		mut swapped := false
 		for j in 0 .. n - 1 - i {
-			if array[j] > array[j + 1] {
-				array[j], array[j + 1] = array[j + 1], array[j]
+			if result[j] > result[j + 1] {
+				result[j], result[j + 1] = result[j + 1], result[j]
 				swapped = true
 			}
 		}
@@ -57,23 +57,23 @@ pub fn bubble_sort(array []int) []int {
 			break
 		}
 	}
-	return array
+	return result
 }
 
-pub fn insertion_sort(array []int) []int {
-	mut array := array.clone()
-	n := array.len
+pub fn insertion_sort(arr []int) []int {
+	mut result := arr.clone()
+	n := result.len
 	if n < 2 {
-		return array
+		return result
 	}
 	for i in 1 .. n {
-		key := array[i]
+		key := result[i]
 		mut j := i - 1
-		for j >= 0 && array[j] > key {
-			array[j + 1] = array[j]
+		for j >= 0 && result[j] > key {
+			result[j + 1] = result[j]
 			j--
 		}
-		array[j + 1] = key
+		result[j + 1] = key
 	}
-	return array
+	return result
 }
