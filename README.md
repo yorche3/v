@@ -9,6 +9,7 @@ Proyectos en **V**, con scripts independientes ejecutados mediante `v run` o com
 | Módulo | Descripción |
 | ------ | ----------- |
 | [`core/foundations/`](core/foundations/) | **Fase 0 — Fundamentos**: `helloworld`, `hellouser`, `unit_test/calculator`, `numbers` |
+| [`core/algorithms/`](core/algorithms/) | **Fase 1 — Algoritmos Puros**: `naive_sort` |
 
 ---
 
@@ -34,6 +35,10 @@ v test ./test
 cd ../../numbers
 v test ./test/recursive_test.v
 v test ./test/iterative_test.v
+
+# Naive Sort tests
+cd ../../algorithms/naive_sort
+v test .
 ```
 
 ---
