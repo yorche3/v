@@ -1,0 +1,7 @@
+naive_sort
+naive_sort.exe
+*.out
+*.o
+*.so
+*.dylib
+*.dll
