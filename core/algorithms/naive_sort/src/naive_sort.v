@@ -18,3 +18,62 @@
 // esqueleto y las pruebas unitarias.
 
 module src
+
+pub fn selection_sort(array []int) []int {
+	mut array := array.clone()
+	n := array.len
+	if n < 2 {
+		return array
+	}
+	for i in 0 .. n - 1 {
+		mut min_index := i
+		for j in i + 1 .. n {
+			if array[j] < array[min_index] {
+				min_index = j
+			}
+		}
+		if min_index != i {
+			array[i], array[min_index] = array[min_index], array[i]
+		}
+	}
+	return array
+}
+
+pub fn bubble_sort(array []int) []int {
+	mut array := array.clone()
+	n := array.len
+	if n < 2 {
+		return array
+	}
+	for i in 0 .. n - 1 {
+		mut swapped := false
+		for j in 0 .. n - 1 - i {
+			if array[j] > array[j + 1] {
+				array[j], array[j + 1] = array[j + 1], array[j]
+				swapped = true
+			}
+		}
+		if !swapped {
+			break
+		}
+	}
+	return array
+}
+
+pub fn insertion_sort(array []int) []int {
+	mut array := array.clone()
+	n := array.len
+	if n < 2 {
+		return array
+	}
+	for i in 1 .. n {
+		key := array[i]
+		mut j := i - 1
+		for j >= 0 && array[j] > key {
+			array[j + 1] = array[j]
+			j--
+		}
+		array[j + 1] = key
+	}
+	return array
+}
