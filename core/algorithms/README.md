@@ -11,6 +11,7 @@ Los módulos de esta fase trabajan sobre **arrays de valor** (`[]int`): reciben 
 | Módulo | Especificación | Enfoque | Tests | Estado |
 |--------|---------------|---------|:-----:|:------:|
 | [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `v test .` (framework integrado) | 21 | ✅ |
+| [`data_structures_basics/`](data_structures_basics/) | [06_Data_Structures_Basics](https://yorche3.github.io/programming_languages/core/algorithms/06_Data_Structures_Basics/) | `v test .` (framework integrado) | 20 | ✅ |
 
 ---
 
@@ -18,13 +19,21 @@ Los módulos de esta fase trabajan sobre **arrays de valor** (`[]int`): reciben 
 
 ```text
 algorithms/
-└── naive_sort/                  # 05_Naive_Sort
-    ├── v.mod                    # Manifiesto del módulo: name 'naive_sort'
-    ├── .gitignore               # Ejecutable compilado y artefactos nativos
-    ├── src/
-    │   └── naive_sort.v         # module src: 3 funciones públicas
-    ├── test/
-    │   └── naive_sort_test.v    # 3 funciones test_* × 7 casos
+├── naive_sort/                  # 05_Naive_Sort
+│   ├── v.mod                    # Manifiesto del módulo: name 'naive_sort'
+│   ├── .gitignore               # Ejecutable compilado y artefactos nativos
+│   ├── src/
+│   │   └── naive_sort.v         # module src: 3 funciones públicas
+│   ├── test/
+│   │   └── naive_sort_test.v    # 3 funciones test_* × 7 casos
+│   └── README.md
+└── data_structures_basics/      # 06_Data_Structures_Basics
+    ├── v.mod                    # Manifiesto del módulo: name 'data_structures_basics'
+    ├── .editorconfig            # Configuración de formato y estilo
+    ├── .gitignore               # Artefactos nativos y ejecutables
+    ├── data_structures_basics.v # Implementación compartida Node, LinkedList, Stack, Queue
+    ├── tests/
+    │   └── data_structures_basics_test.v # Suite de pruebas integrada
     └── README.md
 ```
 
@@ -57,6 +66,10 @@ algorithms/
 ```bash
 # Naive Sort Tests
 cd naive_sort
+v test .
+
+# Data Structures Basics Tests
+cd ../data_structures_basics
 v test .
 ```
 
