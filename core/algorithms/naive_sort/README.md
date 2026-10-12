@@ -148,7 +148,7 @@ V 0.5.2 76c0d94
 ```text
 $ v test .
 ---- Testing... ----------------------------------------------------------------
-OK       2.319 ms /home/yorche3/programming_languages/v/core/algorithms/naive_sort/test/naive_sort_test.v
+OK       2.319 ms ~/programming_languages/v/core/algorithms/naive_sort/test/naive_sort_test.v
 --------------------------------------------------------------------------------
 Summary for all V _test.v files: 1 passed, 1 total. Elapsed time: 3438 ms, on 1 job. Comptime: 3432 ms. Runtime: 2 ms.
 ```
