@@ -12,29 +12,35 @@
 // `delete`; `new_stack`, `push`, `pop`, `peek`; `new_queue`, `enqueue`, `dequeue`,
 // `peek`.
 //
-// Adecuaciones de salida de centinela (todavía no hay fallos reales):
-//   - **int → -1**: `value`, `head`, `pop`, `peek`, `dequeue` y `size` mientras su
-//     cuerpo sea un esqueleto.
-//   - **bool → false**: `is_empty` y `delete`.
+// Indicadores de fallo (valores representables, sin excepciones):
+//   - **int → -1**: `head`, `pop`, `peek` y `dequeue` cuando la estructura está
+//     vacía; `value` y `size` devuelven su valor real.
+//   - **bool → false**: `delete` cuando el valor no estaba.
 //   - **Solo los nodos y los enlaces usan la ausencia nativa `none`**: `next` es
 //     `?&Node`, el opcional de V para punteros, y `none` es la ausencia de enlace
-//     —no un tipo opcional inventado para el indicador de fallo—. Ningún cuerpo
-//     lanza excepciones.
+//     —no un tipo opcional inventado para el indicador de fallo—. Las operaciones
+//     sin resultado de fallo (`insert_head`, `insert_tail`, `push`, `enqueue`) no
+//     devuelven nada.
+//   - Ningún cuerpo lanza excepciones: el fallo viaja en el valor devuelto.
 //
-// `init` de la especificación: las funciones `new_node`, `new_linked_list`,
-// `new_stack` y `new_queue` construyen el estado —la celda con su valor y sin
-// enlace; las tres estructuras vacías— y quedan implementadas; el resto de los
-// cuerpos son esqueletos con el centinela de su tipo. La implementación es el
-// paso 5.
+// Mutabilidad: las tres estructuras mutan en sitio, así que cada escenario trabaja
+// con una instancia (`new_linked_list()` y luego las operaciones). `Node` es la
+// celda compartida: el valor se fija al construirla y el enlace se reengancha.
+//
+// V y los punteros de la celda: `Node` va marcado `@[heap]`, porque un campo
+// `?&Node` puede apuntar a memoria del montón y V lo exige para asignar enlaces;
+// y un opcional no se puede usar directamente —se desenvuelve con `if x := opt`,
+// con `if mut x := opt` cuando hay que reenganchar ese nodo, o con `or { … }` en
+// los recorridos—.
+//
+// Complejidad: O(1) en `head`, `insert_head`, `insert_tail`, `push`, `pop`,
+// `peek`, `enqueue`, `dequeue`, `is_empty` y `size` —las estructuras guardan sus
+// punteros (cabeza/cola, cima, frente/final) y su contador— y O(n) en `delete`,
+// como pide la especificación.
 
 module data_structures_basics
 
-// ---------------------------------------------------------------------------
-// Node — celda enlazada compartida por LinkedList, Stack y Queue.
-// ---------------------------------------------------------------------------
-
-// Celda enlazada. El valor es inmutable tras la construcción; el enlace es
-// mutable.
+@[heap]
 pub struct Node {
 mut:
 	value int
@@ -50,26 +56,25 @@ pub fn new_node(value int) &Node {
 	}
 }
 
-// Esqueleto: valor de la celda.
+// Valor de la celda. No muta.
 pub fn (node &Node) value() int {
-	return -1
+	return node.value
 }
 
-// Esqueleto: enlace a la celda siguiente, o none cuando no hay ninguna.
+// Enlace a la celda siguiente, o none cuando no hay ninguna.
 pub fn (node &Node) next() ?&Node {
-	return none
+	return node.next
 }
 
-// Esqueleto: reengancha el enlace.
+// Reengancha el enlace: la celda es mutable.
 pub fn (mut node Node) set_next(next ?&Node) {
-	_ = next
+	node.next = next
 }
 
 // ---------------------------------------------------------------------------
 // LinkedList
 // ---------------------------------------------------------------------------
 
-// Lista enlazada simple construida desde cero sobre Node.
 pub struct LinkedList {
 mut:
 	head  ?&Node
@@ -77,39 +82,75 @@ mut:
 	count int
 }
 
-// Crea una lista vacía: sin enlaces y con el contador a cero.
+// Crea una lista vacía: sin enlaces y con el contador a cero (el `init()` de la
+// especificación).
 pub fn new_linked_list() &LinkedList {
 	return &LinkedList{}
 }
 
-// Esqueleto: valor de la cabeza, o -1 cuando la lista está vacía. No muta.
+// Valor de la cabeza, o -1 cuando la lista está vacía. No muta.
 pub fn (list &LinkedList) head() int {
+	if head := list.head {
+		return head.value()
+	}
 	return -1
 }
 
-// Esqueleto: true solo si no hay nodos.
+// true solo si no hay nodos.
 pub fn (list &LinkedList) is_empty() bool {
-	return false
+	return list.head == none
 }
 
-// Esqueleto: número de nodos (el centinela es -1 mientras sea esqueleto).
+// Número de nodos. O(1) sobre el contador.
 pub fn (list &LinkedList) size() int {
-	return -1
+	return list.count
 }
 
-// Esqueleto: inserta al principio. O(1). Sin resultado de fallo.
+// Inserta al principio: O(1) y sin resultado de fallo.
 pub fn (mut list LinkedList) insert_head(value int) {
-	_ = value
+	mut new_head := new_node(value)
+	new_head.set_next(list.head)
+	list.head = new_head
+	if list.tail == none {
+		list.tail = new_head
+	}
+	list.count++
 }
 
-// Esqueleto: inserta al final. O(1). Sin resultado de fallo.
+// Inserta al final: O(1) y sin resultado de fallo. El final guardado es lo que
+// evita recorrer la lista.
 pub fn (mut list LinkedList) insert_tail(value int) {
-	_ = value
+	new_tail := new_node(value)
+	if mut tail := list.tail {
+		tail.set_next(new_tail)
+	} else {
+		list.head = new_tail
+	}
+	list.tail = new_tail
+	list.count++
 }
 
-// Esqueleto: borra la primera aparición; false cuando el valor no estaba. O(n).
+// Borra la primera aparición: true si borró y false si el valor no estaba. O(n).
 pub fn (mut list LinkedList) delete(value int) bool {
-	_ = value
+	mut previous := ?&Node(none)
+	mut current := list.head
+	for current != none {
+		node := current or { break }
+		if node.value() == value {
+			if mut prev := previous {
+				prev.set_next(node.next())
+			} else {
+				list.head = node.next()
+			}
+			if list.tail == current {
+				list.tail = previous
+			}
+			list.count--
+			return true
+		}
+		previous = current
+		current = node.next()
+	}
 	return false
 }
 
@@ -117,40 +158,52 @@ pub fn (mut list LinkedList) delete(value int) bool {
 // Stack
 // ---------------------------------------------------------------------------
 
-// Pila LIFO construida desde cero sobre Node.
 pub struct Stack {
 mut:
 	top   ?&Node
 	count int
 }
 
-// Crea una pila vacía: sin cima y con el contador a cero.
+// Crea una pila vacía: sin cima y con el contador a cero (el `init()` de la
+// especificación).
 pub fn new_stack() &Stack {
 	return &Stack{}
 }
 
-// Esqueleto: true solo si no hay nodos.
+// true solo si no hay nodos.
 pub fn (stack &Stack) is_empty() bool {
-	return false
+	return stack.top == none
 }
 
-// Esqueleto: número de nodos (el centinela es -1 mientras sea esqueleto).
+// Número de nodos. O(1) sobre el contador.
 pub fn (stack &Stack) size() int {
-	return -1
+	return stack.count
 }
 
-// Esqueleto: apila sobre la cima. O(1). Sin resultado de fallo.
+// Apila sobre la cima: O(1) y sin resultado de fallo.
 pub fn (mut stack Stack) push(value int) {
-	_ = value
+	mut new_top := new_node(value)
+	new_top.set_next(stack.top)
+	stack.top = new_top
+	stack.count++
 }
 
-// Esqueleto: desapila el valor de la cima, o -1 cuando está vacía. O(1).
+// Desapila: devuelve el valor de la cima, o -1 cuando está vacía. O(1).
 pub fn (mut stack Stack) pop() int {
+	if top := stack.top {
+		value := top.value()
+		stack.top = top.next()
+		stack.count--
+		return value
+	}
 	return -1
 }
 
-// Esqueleto: valor de la cima, o -1 cuando está vacía. No muta.
+// Valor de la cima, o -1 cuando está vacía. No muta.
 pub fn (stack &Stack) peek() int {
+	if top := stack.top {
+		return top.value()
+	}
 	return -1
 }
 
@@ -158,7 +211,6 @@ pub fn (stack &Stack) peek() int {
 // Queue
 // ---------------------------------------------------------------------------
 
-// Cola FIFO construida desde cero sobre Node.
 pub struct Queue {
 mut:
 	front ?&Node
@@ -166,32 +218,53 @@ mut:
 	count int
 }
 
-// Crea una cola vacía: sin frente, sin final y con el contador a cero.
+// Crea una cola vacía: sin frente, sin final y con el contador a cero (el
+// `init()` de la especificación).
 pub fn new_queue() &Queue {
 	return &Queue{}
 }
 
-// Esqueleto: true solo si no hay nodos.
+// true solo si no hay nodos.
 pub fn (queue &Queue) is_empty() bool {
-	return false
+	return queue.front == none
 }
 
-// Esqueleto: número de nodos (el centinela es -1 mientras sea esqueleto).
+// Número de nodos. O(1) sobre el contador.
 pub fn (queue &Queue) size() int {
-	return -1
+	return queue.count
 }
 
-// Esqueleto: encola por el final. O(1). Sin resultado de fallo.
+// Encola por el final: O(1) y sin resultado de fallo. El final guardado es lo que
+// evita recorrer la cola.
 pub fn (mut queue Queue) enqueue(value int) {
-	_ = value
+	new_rear := new_node(value)
+	if mut rear := queue.rear {
+		rear.set_next(new_rear)
+	} else {
+		queue.front = new_rear
+	}
+	queue.rear = new_rear
+	queue.count++
 }
 
-// Esqueleto: desencola el valor del frente, o -1 cuando está vacía. O(1).
+// Desencola: devuelve el valor del frente, o -1 cuando está vacía. O(1).
 pub fn (mut queue Queue) dequeue() int {
+	if front := queue.front {
+		value := front.value()
+		queue.front = front.next()
+		if queue.front == none {
+			queue.rear = none
+		}
+		queue.count--
+		return value
+	}
 	return -1
 }
 
-// Esqueleto: valor del frente, o -1 cuando está vacía. No muta.
+// Valor del frente, o -1 cuando está vacía. No muta.
 pub fn (queue &Queue) peek() int {
+	if front := queue.front {
+		return front.value()
+	}
 	return -1
 }
