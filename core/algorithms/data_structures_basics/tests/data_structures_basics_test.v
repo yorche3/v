@@ -5,7 +5,7 @@
 // `new_*`; sus valores y los enteros de las operaciones no admiten `null`,
 // por lo que no hay un caso nulo independiente.
 
-import data_structures_basics as ds
+import data_structures_basics.src as ds
 
 const failure_value = -1
 const empty_size = 0

@@ -11,7 +11,7 @@ Los módulos de esta fase trabajan sobre **arrays de valor** (`[]int`): reciben 
 | Módulo | Especificación | Enfoque | Tests | Estado |
 |--------|---------------|---------|:-----:|:------:|
 | [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `v test .` (framework integrado) | 21 | ✅ |
-| [`data_structures_basics/`](data_structures_basics/) | [06_Data_Structures_Basics](https://yorche3.github.io/programming_languages/core/algorithms/06_Data_Structures_Basics/) | `v test .` (framework integrado) | 20 | ✅ |
+| [`data_structures_basics/`](data_structures_basics/) | [06_Data_Structures_Basics](https://yorche3.github.io/programming_languages/core/algorithms/06_Data_Structures_Basics/) | `v test .` (framework integrado) | 15 | ✅ |
 
 ---
 
@@ -31,9 +31,10 @@ algorithms/
     ├── v.mod                    # Manifiesto del módulo: name 'data_structures_basics'
     ├── .editorconfig            # Configuración de formato y estilo
     ├── .gitignore               # Artefactos nativos y ejecutables
-    ├── data_structures_basics.v # Implementación compartida Node, LinkedList, Stack, Queue
+    ├── src/
+    │   └── data_structures_basics.v # module src: Node, LinkedList, Stack, Queue
     ├── tests/
-    │   └── data_structures_basics_test.v # Suite de pruebas integrada
+    │   └── data_structures_basics_test.v # 23 funciones test_*
     └── README.md
 ```
 

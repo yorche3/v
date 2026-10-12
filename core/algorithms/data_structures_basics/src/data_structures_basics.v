@@ -38,7 +38,7 @@
 // punteros (cabeza/cola, cima, frente/final) y su contador— y O(n) en `delete`,
 // como pide la especificación.
 
-module data_structures_basics
+module src
 
 @[heap]
 pub struct Node {

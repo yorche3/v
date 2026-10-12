@@ -12,8 +12,8 @@ Describe la estructura del proyecto y el propósito de cada archivo.
 
 | Archivo / Directory | Propósito / Purpose |
 |---|---|
-| `data_structures_basics.v` | Implementación del nodo compartido y las tres estructuras de datos (`Node`, `LinkedList`, `Stack`, `Queue`) / Source code for shared node and data structures |
-| `tests/data_structures_basics_test.v` | Suite de pruebas unitarias integradas con 20 funciones `test_*` / Unit test suite covering all contract operations |
+| `src/data_structures_basics.v` | Implementación del nodo compartido y las tres estructuras de datos (`Node`, `LinkedList`, `Stack`, `Queue`) / Source code for shared node and data structures |
+| `tests/data_structures_basics_test.v` | Suite de pruebas unitarias integradas con 23 funciones `test_*` / Unit test suite covering all contract operations |
 | `v.mod` | Manifiesto de metadatos del módulo V / V module manifest |
 | `.gitignore` | Archivos generados y artefactos excluidos / Ignored generated files |
 | `.editorconfig` | Configuración de formato y estilo de código / Editor formatting rules |
@@ -22,14 +22,15 @@ Describe la estructura del proyecto y el propósito de cada archivo.
 data_structures_basics/
 ├── .editorconfig
 ├── .gitignore
-├── data_structures_basics.v
+├── src/
+│   └── data_structures_basics.v
 ├── tests/
 │   └── data_structures_basics_test.v
 ├── v.mod
 └── README.md
 ```
 
-> **Nota de desviación de estructura / Layout deviation note:** La especificación sugiere la ruta `src/data_structures_basics.ext` y `test/run_tests.ext`. En este proyecto se adoptó la convención de paquetes de V: el archivo fuente principal `data_structures_basics.v` reside directamente en la raíz del módulo del paquete y las pruebas residen en la carpeta `tests/` con sufijo `_test.v`, ejecutadas de forma nativa mediante `v test .` sin requerir un runner manual `run_tests`.
+> **Nota de desviación de estructura / Layout deviation note:** La especificación sugiere `src/data_structures_basics.ext` y `test/run_tests.ext`. Aquí el fuente vive en `src/data_structures_basics.v` —declara `module src` y es lo que verifica `v fmt -verify src`— y las pruebas en `tests/`, la carpeta que crea `v init --lib`, con el sufijo `_test.v` que V descubre y `v test .` como runner, sin `run_tests` manual.
 
 ---
 
@@ -55,15 +56,14 @@ v init
 
 ```v
 Module {
-	name: 'data_structures_basics'
-	description: ''
-	version: '0.0.1'
-	license: 'GNU'
-	dependencies: []
+    name: 'data_structures_basics'
+    version: '0.1.0'
+    license: 'MIT'
+    dependencies: []
 }
 ```
 
-El manifiesto identifica el módulo local `data_structures_basics`, permitiendo su importación como paquete en la suite de pruebas mediante `import data_structures_basics as ds`.
+El manifiesto identifica el módulo local `data_structures_basics`; el fuente declara `module src` (submódulo del paquete) y la suite lo importa con `import data_structures_basics.src as ds`. El `description` vacío y la versión/licencia por defecto que escribe el inicializador se retiraron para dejar el mismo patrón que `core/foundations/numbers/`: versión declarada `0.1.0` y licencia `MIT`.
 
 ---
 
@@ -72,7 +72,7 @@ El manifiesto identifica el módulo local `data_structures_basics`, permitiendo 
 ### Verificación estática / Static check
 
 ```bash
-v -shared -check data_structures_basics.v
+v -shared -check src/data_structures_basics.v
 ```
 
 ### Ejecución de pruebas / Run tests
@@ -84,13 +84,13 @@ v test .
 **Salida real / Actual output:**
 
 ```text
-$ v -shared -check data_structures_basics.v
+$ v -shared -check src/data_structures_basics.v
 
 $ v test .
 ---- Testing... ----------------------------------------------------------------
-OK       3.669 ms ~/programming_languages/v/core/algorithms/data_structures_basics/tests/data_structures_basics_test.v
+OK       3.209 ms ~/programming_languages/v/core/algorithms/data_structures_basics/tests/data_structures_basics_test.v
 --------------------------------------------------------------------------------
-Summary for all V _test.v files: 1 passed, 1 total. Elapsed time: 3283 ms, on 1 job. Comptime: 3275 ms. Runtime: 3 ms.
+Summary for all V _test.v files: 1 passed, 1 total. Elapsed time: 3350 ms, on 1 job. Comptime: 3344 ms. Runtime: 3 ms.
 ```
 
 ---
@@ -143,7 +143,7 @@ Summary for all V _test.v files: 1 passed, 1 total. Elapsed time: 3283 ms, on 1 
 | `init(value)` / `init()` constructores | Funciones constructoras idiomáticas `new_node`, `new_linked_list`, `new_stack`, `new_queue` | V utiliza convenciones `new_*` como constructores factoría estándar que devuelven referencias inicializadas |
 | Representación de ausencia en enlaces (`next = absent`) | `next = none` sobre tipo `?&Node` | V utiliza `none` para denotar la ausencia nativa en tipos opcionales de puntero |
 | `get_value()`, `get_next()`, `get_head()` | Métodos de método receptor `node.value()`, `node.next()`, `list.head()` | En V los getters omiten el prefijo `get_` para alinearse con el estilo idiomático del lenguaje |
-| Ubicación esperada `src/` y `test/run_tests.ext` | `data_structures_basics.v` en la raíz del módulo y `tests/` con `v test .` | V organiza proyectos modulares descubriendo pruebas directamente con la herramienta CLI estándar `v test` |
+| Ubicación esperada `src/` y `test/run_tests.ext` | `src/data_structures_basics.v` (con `module src`) y `tests/` con `v test .` | El fuente va a `src/` porque es la ruta que verifican `v fmt -verify src` y los tres módulos V homologados; `tests/` es la carpeta que crea `v init --lib` y se conserva tal cual |
 | Caso nulo / entrada inválida | Omitido para valores numéricos enteros | `int` en V es un tipo de valor primitivo que no admite `null`; no hay caso nulo para enteros representables |
 
 ---
