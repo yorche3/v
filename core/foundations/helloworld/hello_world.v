@@ -1,1 +1,1 @@
-println('Hello, World! from VLang')
+println('Hello, World! from V!')

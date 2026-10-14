@@ -8,7 +8,7 @@ Implementación de la especificación [01_Hello_World](https://yorche3.github.io
 
 | Archivo | Propósito |
 |---------|-----------|
-| [`hello_world.v`](hello_world.v) | Código fuente: imprime `"Hello, World! from VLang"` en la salida estándar. |
+| [`hello_world.v`](hello_world.v) | Código fuente: imprime `"Hello, World! from V!"` en la salida estándar. |
 
 **Estructura de directorios esperada:**
 
