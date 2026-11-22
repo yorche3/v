@@ -9,7 +9,7 @@ Proyectos en **V**, con scripts independientes ejecutados mediante `v run` o com
 | Módulo | Descripción |
 | ------ | ----------- |
 | [`core/foundations/`](core/foundations/) | **Fase 0 — Fundamentos**: `helloworld`, `hellouser`, `unit_test/calculator`, `numbers` |
-| [`core/algorithms/`](core/algorithms/) | **Fase 1 — Algoritmos Puros**: `naive_sort`, `data_structures_basics` |
+| [`core/algorithms/`](core/algorithms/) | **Fase 1 — Algoritmos Puros**: `naive_sort`, `data_structures_basics`, `data_structures_advanced` |
 
 ---
 
@@ -42,6 +42,10 @@ v test .
 
 # Data Structures Basics tests
 cd ../data_structures_basics
+v test .
+
+# Data Structures Advanced tests
+cd ../data_structures_advanced
 v test .
 ```
 
