@@ -12,6 +12,7 @@ Los módulos de esta fase trabajan sobre **arrays de valor** (`[]int`): reciben 
 |--------|---------------|---------|:-----:|:------:|
 | [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `v test .` (framework integrado) | 21 | ✅ |
 | [`data_structures_basics/`](data_structures_basics/) | [06_Data_Structures_Basics](https://yorche3.github.io/programming_languages/core/algorithms/06_Data_Structures_Basics/) | `v test .` (framework integrado) | 15 | ✅ |
+| [`data_structures_advanced/`](data_structures_advanced/) | [07_Data_Structures_Advanced](https://yorche3.github.io/programming_languages/core/algorithms/07_Data_Structures_Advanced/) | `v test .` (framework integrado) | 23 | ✅ |
 
 ---
 
@@ -27,14 +28,24 @@ algorithms/
 │   ├── test/
 │   │   └── naive_sort_test.v    # 3 funciones test_* × 7 casos
 │   └── README.md
-└── data_structures_basics/      # 06_Data_Structures_Basics
-    ├── v.mod                    # Manifiesto del módulo: name 'data_structures_basics'
+├── data_structures_basics/      # 06_Data_Structures_Basics
+│   ├── v.mod                    # Manifiesto del módulo: name 'data_structures_basics'
+│   ├── .editorconfig            # Configuración de formato y estilo
+│   ├── .gitignore               # Artefactos nativos y ejecutables
+│   ├── src/
+│   │   └── data_structures_basics.v # module src: Node, LinkedList, Stack, Queue
+│   ├── tests/
+│   │   └── data_structures_basics_test.v # 23 funciones test_*
+│   └── README.md
+└── data_structures_advanced/    # 07_Data_Structures_Advanced
+    ├── v.mod                    # Manifiesto del módulo: name 'data_structures_advanced'
     ├── .editorconfig            # Configuración de formato y estilo
+    ├── .gitattributes           # Atributos de control de versiones git
     ├── .gitignore               # Artefactos nativos y ejecutables
     ├── src/
-    │   └── data_structures_basics.v # module src: Node, LinkedList, Stack, Queue
+    │   └── data_structures_advanced.v # module src: TreeNode, BinaryTree, GraphNode, Graph
     ├── tests/
-    │   └── data_structures_basics_test.v # 23 funciones test_*
+    │   └── data_structures_advanced_test.v # 23 funciones test_*
     └── README.md
 ```
 
@@ -71,6 +82,10 @@ v test .
 
 # Data Structures Basics Tests
 cd ../data_structures_basics
+v test .
+
+# Data Structures Advanced Tests
+cd ../data_structures_advanced
 v test .
 ```
 
